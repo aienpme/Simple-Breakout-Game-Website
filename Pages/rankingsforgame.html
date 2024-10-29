@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rankings</title>
+    <link rel="stylesheet" href="../CSS/styles.css"> 
+</head>
+<body>
+    <div class="navigation-bar"> <!-- Adds in link for each page.  -->
+        <a href="game.html">Back to game</a>
+        <a href="logout.html">Log Out</a> 
+        <a class="active" href="rankingsforgame.html">Rankings</a> 
+        <a href="aboutgameforgame.html">About Game</a> 
+    </div>
+
+    <div class="rankings-content">
+        <h2>Rankings</h2>
+        <table class="rankings-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="rankingsTableBody">
+                <!-- Rankings will be displayed here, in terms of highest score to lowest. -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="../JavaScript/Rankings.js"></script>
+    
+</body>
+</html>

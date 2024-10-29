@@ -1,0 +1,269 @@
+html, body {
+    height: 100%; /* Makes sure the html and body take up 100% */
+    margin: 0;
+    padding: 0;
+    
+}
+
+canvas { /*Styling for canvas*/ /* */
+    border: 1px solid #d3d3d3;   
+    background-color: #f1f1f1;   
+}
+
+body {
+    font-family: Arial, sans-serif;
+    position: relative; 
+    color: white; 
+}
+
+body::before { /* Pseudo-element for the background */
+    content: ''; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/breakoutimage.webp'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    filter: blur(10px); 
+    z-index: -1; 
+}
+
+.navigation-bar { /* Navigation bar styling */
+    background-color: rgba(0, 0, 0, 0.7); 
+    display: flex; 
+    justify-content: space-around; 
+    padding: 15px 0; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); 
+}
+
+.navigation-bar a { /* Navigation bar text styling */
+    color: #fff; 
+    text-align: center; 
+    padding: 14px 25px; 
+    text-decoration: none;
+    border-radius: 25px; 
+    transition: background-color 0.3s, transform 0.2s; 
+}
+
+.navigation-bar a:hover { /* Navigation bar button hover */
+    background-color: #FFDAB9; 
+    color: white; 
+    transform: scale(1.05); 
+}
+
+.navigation-bar a.active { /* Styling for active page */
+    background-color: #ff4081; 
+}
+
+.navigation-bar a:not(.active) {
+    font-weight: normal;
+}
+
+.about-game-content, .register-form, .rankings-content { /* Styling for about game, register form, and ranking */
+    background: rgba(255, 255, 255, 0.8); 
+    padding: 20px;
+    border-radius: 10px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); 
+    margin: 50px auto; 
+    width: 80%; 
+    max-width: 600px; 
+}
+
+.content-box { /* Styling for content box */
+    background: linear-gradient(135deg, #9b59b6, #ff7f50, #add8e6); 
+    color: white; 
+    border-radius: 15px; 
+    padding: 20px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    max-width: 600px; 
+    margin: 50px auto; 
+    text-align: center; 
+}
+
+.content-box textarea { /* Styling for content box text */
+    width: 90%; 
+    border: none; 
+    border-radius: 10px;
+    padding: 10px; 
+    font-size: 16px; 
+    resize: none; 
+    background: rgba(255, 255, 255, 0.9); 
+    color: black;
+    margin: 0 auto; 
+    display: block; 
+}
+
+.about-game { /* Styling for about game section */
+    background: linear-gradient(135deg, #9b59b6, #ff7f50, #add8e6); 
+    color: white;
+    border-radius: 15px; 
+    padding: 40px 50px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+    max-width: 600px; 
+    margin: 50px auto; 
+    text-align: center; 
+    
+}
+
+.about-game textarea { /* Styling for about game text area */
+    width: 90%; 
+    border: none;
+    border-radius: 10px; 
+    padding: 60px 20px; 
+    font-size: 16px;
+    resize: none; 
+    background: rgba(255, 255, 255, 0.9); 
+    color: black; 
+    margin: 0 auto; 
+    display: block; 
+    overflow: hidden;
+}
+
+form { /* Styling for form */
+     margin: 0; /* Remove default margin */
+     padding: 0; /* Remove default padding */
+     border: none; /* Remove border */
+     background: none; /* Remove background */
+     box-shadow: none; /* Remove shadow if any */
+    }
+    
+
+label { /* Styling for label */
+    font-size: 18px; /* Adjust the font size for the labels */
+}
+
+input[type="submit"] { /* Styling for submit buttons  */
+    font-size: 16px;
+    padding: 15px 30px;
+    color: black;
+    transition: background-color 0.3s;
+
+}
+
+input[type="submit"]:hover { /* Styling for submit button when hovering over the button */
+    background-color: #ff6347; 
+}
+
+
+.gamebox { /* Styling for gamebox */
+    background: linear-gradient(135deg, #9b59b6, #ff7f50, #add8e6); 
+    color: white; 
+    border-radius: 15px; 
+    padding: 100px 100px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+    max-width: 600px; 
+    margin: 50px auto; 
+    text-align: center; 
+    position: relative; 
+}
+
+.gamebox h1 { /* Gamebox heading styling */
+    position: absolute; 
+    top: 10px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    margin: 0; 
+    padding: 0; 
+}
+
+#myCanvas { /* Styling for canvas */
+    border: 1px solid black;
+    background: linear-gradient(135deg, #f56fff, #84ffd0, #82d4ef);
+    box-shadow:  0 4px 8px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.login-box { /* Styling for login-box */
+    background: linear-gradient(135deg, #9b59b6, #ff7f50, #add8e6);
+    color: white; 
+    border-radius: 15px; 
+    padding: 40px 50px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+    max-width: 600px; 
+    margin: 50px auto;
+    text-align: center; 
+}
+
+.register-form{ /* Styling for register box */
+    background: linear-gradient(135deg, #9b59b6, #ff7f50, #add8e6);
+    color: white;
+    border-radius: 15px; 
+    padding: 40px 50px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+    max-width: 600px; 
+    margin: 50px auto; 
+    text-align: center; 
+}
+
+#startButton { /* Styling for start game button */
+    padding: 10px 20px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+    background-color: #0095DD; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    transition: background-color 0.3s; 
+}
+
+
+#startButton:hover { /* Hover effect for start button */
+    background-color: #ff6347; 
+}
+
+.rankings-content { /* Ranking box styling  */
+    background: linear-gradient(135deg, #9b59b6, #ff7f50, #add8e6);
+    color: white; 
+    border-radius: 15px;
+    padding: 40px 50px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+    max-width: 600px; 
+    margin: 50px auto;
+    text-align: center; 
+}
+
+.rankings-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#gameMessage { /* Game message styling */
+    color: red;                  
+    font-size: 20px;             
+    text-align: center;           
+    margin-top: 10px;           
+    display: none;                
+}
+
+.rankings-table th, .rankings-table td { /* Lines for the ranking table */
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.rankings-table th { /* Adds blue to the username and score in the ranking table */
+    background-color: #0095DD;
+    color: white;
+}
+
+.registration-message { /* Styling for registration message */
+    color: red;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+#error-message { /* Styling for login error message */
+    color: red;         
+    margin-top: 10px;   
+}
+
+
+
+
+

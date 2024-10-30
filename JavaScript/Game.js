@@ -12,9 +12,9 @@ class Game {
         this.levels = [
             { rows: 2, cols: 5 },
             { rows: 3, cols: 5 },
-            { rows: 5, cols: 5 },
-            { rows: 6, cols: 6 },
-            { rows: 6, cols: 6, extraHeartBricks: 2 }
+            { rows: 4, cols: 5},
+            { rows: 5, cols: 5},
+            { rows: 6, cols: 5, extraHeartBricks: 2},
         ];
         this.currentLevel = 0;
         this.score = 0;
@@ -31,7 +31,7 @@ class Game {
         this.setupBricks();
         this.gameRunning = false;
         this.gameOver = false;
-        this.gameCompleted = false; 
+        this.gameCompleted = false;
         this.animationFrameId = null;
         this.message = "";
         this.messageTimeout = null;
@@ -40,6 +40,9 @@ class Game {
         document.addEventListener("keydown", this.keyDownHandler.bind(this));
         document.addEventListener("keyup", this.keyUpHandler.bind(this));
         document.getElementById("startButton").addEventListener("click", this.startGame.bind(this));
+        
+        // Event listener for the Play Again button
+        document.getElementById("playAgainButton").addEventListener("click", this.resetGame.bind(this));
     }
 
     setupBricks() {
@@ -64,6 +67,9 @@ class Game {
     }
 
     keyDownHandler(e) {
+        if (e.key === "e") {
+            this.displayWinMessage();
+        }
         if (e.key === "Right" || e.key === "ArrowRight") {
             this.paddle.rightPressed = true;
         } else if (e.key === "Left" || e.key === "ArrowLeft") {
@@ -99,12 +105,6 @@ class Game {
                 }
             }
         }
-
-        if (this.bricks.every(brick => brick.status === 0)) {
-            this.displayMessage(`Nice! Current score: ${this.score}`);
-            this.saveScore();
-            this.nextLevel();
-        }
     }
 
     displayMessage(message) {
@@ -117,13 +117,17 @@ class Game {
 
     nextLevel() {
         this.currentLevel++;
-        if (this.currentLevel < this.levels.length) {
+        if (this.currentLevel >= this.levels.length) {
+            this.displayWinMessage();
+        } else {
+            
+        
             console.log(`Moving to Level ${this.currentLevel + 1}. Current score: ${this.score}`);
-
+    
             this.lives = 3; 
             this.setupBricks(); 
             this.ball.reset(this.paddle.x); 
-            
+    
             // Increase ball speed for higher levels
             if (this.currentLevel === 3) {
                 this.ball.dx *= 1.2;
@@ -132,25 +136,11 @@ class Game {
                 this.ball.dx *= 1.44;
                 this.ball.dy *= 1.44;
             }
-
-            this.displayMessage(`Level ${this.currentLevel + 1}! Score: ${this.score}`); 
-        } else {
-            this.gameOver = true; 
-            this.gameCompleted = true; 
-            this.ball.dx = 0; 
-            this.ball.dy = 0;
-            this.displayWinMessage(); 
-            this.saveScore();
     
-        
-            clearTimeout(this.messageTimeout);
-            this.messageTimeout = setTimeout(() => {
-             this.message = "";  
-            }, 5000);
-
-            this.draw();
+            this.displayMessage(`Level ${this.currentLevel + 1}! Score: ${this.score}`); 
         }
     }    
+     
 
     displayWinMessage() {
         this.gameOver = true;
@@ -159,14 +149,15 @@ class Game {
         this.ball.dy = 0;
         this.displayMessage(`You win! Final score: ${this.score}`);
         this.saveScore();
-    
-        
+
         clearTimeout(this.messageTimeout);
         this.messageTimeout = setTimeout(() => {
             this.message = ""; 
         }, 5000);
+        
+        // Show the Play Again button
+        document.getElementById("playAgainButton").style.display = "block";
     }
-    
 
     displayGameOver() {
         this.gameOver = true;
@@ -180,23 +171,8 @@ class Game {
     }
 
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear the screen first
 
-    
-        this.bricks.forEach(brick => {
-            brick.draw(this.ctx, (this.canvas.width - (this.levels[this.currentLevel].cols - 1) * 10) / this.levels[this.currentLevel].cols, 20);
-        });
-
-        this.ball.draw();
-        this.paddle.draw();
-        this.drawScore();
-        this.drawLives();
-        
-        if (!this.gameOver && !this.gameCompleted) {
-            this.collisionDetection();
-        }
-
-    
         if (this.message) {
             this.ctx.save();
             this.ctx.fillStyle = "rgba(255, 0, 0, 0.8)";  
@@ -206,8 +182,17 @@ class Game {
             this.ctx.fillText(this.message, this.canvas.width / 2, this.canvas.height / 2); 
             this.ctx.restore();
         }
-
+        // This is where the actual game logic updating happens
         if (!this.gameCompleted && !this.gameOver) {
+            this.bricks.forEach(brick => {
+                brick.draw(this.ctx, (this.canvas.width - (this.levels[this.currentLevel].cols - 1) * 10) / this.levels[this.currentLevel].cols, 20);
+            });
+            this.ball.draw();
+            this.paddle.draw();
+            this.drawScore();
+            this.drawLives();
+            
+            this.collisionDetection();
             this.ball.update();
 
             if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius) {
@@ -223,10 +208,9 @@ class Game {
                     }
                 }
             }
+            this.paddle.update();
+            this.animationFrameId = requestAnimationFrame(this.draw.bind(this));
         }
-
-        this.paddle.update();
-        this.animationFrameId = requestAnimationFrame(this.draw.bind(this));
     }
 
     startGame() {
@@ -243,28 +227,32 @@ class Game {
 
     drawScore() {
         this.ctx.font = "16px Arial";
-        this.ctx.fillStyle = "#0095DD";
+        this.ctx.fillStyle = "#000000";
         this.ctx.textAlign = "left";
         this.ctx.fillText("Score: " + this.score, 20, 20);
     }
 
     drawLives() {
         this.ctx.font = "16px Arial";
-        this.ctx.fillStyle = "#0095DD";
+        this.ctx.fillStyle = "#000000";
         this.ctx.fillText("Lives: " + this.lives, this.canvas.width - 65, 20);
     }
 
     saveScore() {
         if (this.username) {
             let scores = JSON.parse(localStorage.getItem("scores")) || {}; 
-            scores[this.username] = this.score; // 
-            localStorage.setItem("scores", JSON.stringify(scores)); // 
-            console.log(`Score saved for ${this.username}: ${this.score}`); 
+            scores[this.username] = this.score;
+            localStorage.setItem("scores", JSON.stringify(scores));
+            console.log(`Score saved for ${this.username}: ${this.score}`);
         } else {
             console.log("No logged-in user found. Score not saved."); 
         }
     }
-}
+
+    resetGame() {
+        window.location.href = 'game.html';
+    }
+}    
 
 // Initialize game
 document.addEventListener("DOMContentLoaded", () => {

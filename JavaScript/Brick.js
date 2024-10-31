@@ -7,6 +7,7 @@ export class Brick {
         this.color = "#663399";
     }
 
+    // Draws the bricks on the canvas 
     draw(ctx, width, height) {
         if (this.status === 1) {
             ctx.beginPath();

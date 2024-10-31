@@ -9,6 +9,7 @@ export class Ball {
         this.dy = -2; 
     }
 
+    // Draws the ball on the canvas 
     draw() {
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -30,6 +31,7 @@ export class Ball {
         }
     }
 
+    // When reset, put the ball on the paddle 
     reset(paddleX) {
         this.x = paddleX + (75 / 2);
         this.y = this.canvas.height - 20;

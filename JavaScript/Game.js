@@ -1,8 +1,9 @@
+// Import ball, paddle and brick from their js files
 import { Ball } from './Ball.js';
 import { Paddle } from './Paddle.js';
 import { Brick } from './Brick.js';
 
-class Game {
+class Game { // Game class that handles the game logic 
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
@@ -12,9 +13,9 @@ class Game {
         this.levels = [
             { rows: 2, cols: 5 },
             { rows: 3, cols: 5 },
-            { rows: 4, cols: 5},
-            { rows: 5, cols: 5},
-            { rows: 6, cols: 5, extraHeartBricks: 2},
+            { rows: 4, cols: 5 },
+            { rows: 5, cols: 5 },
+            { rows: 6, cols: 6, extraHeartBricks: 2},
         ];
         this.currentLevel = 0;
         this.score = 0;
@@ -28,6 +29,7 @@ class Game {
             console.log("Logged-in user:", this.username);
         }
 
+        // Setup game components and different states
         this.setupBricks();
         this.gameRunning = false;
         this.gameOver = false;
@@ -37,6 +39,7 @@ class Game {
         this.messageTimeout = null;
         this.reloadTimeout = null;
 
+        // Event listeners for game controls 
         document.addEventListener("keydown", this.keyDownHandler.bind(this));
         document.addEventListener("keyup", this.keyUpHandler.bind(this));
         document.getElementById("startButton").addEventListener("click", this.startGame.bind(this));
@@ -45,6 +48,7 @@ class Game {
         document.getElementById("playAgainButton").addEventListener("click", this.resetGame.bind(this));
     }
 
+    // Creates brick layout for current level
     setupBricks() {
         const { rows, cols, extraHeartBricks } = this.levels[this.currentLevel];
         const brickWidth = (this.canvas.width - (cols - 1) * 10) / cols;
@@ -58,6 +62,7 @@ class Game {
             }
         }
 
+        // Checks for final level, and adds extra heart bricks that give more lives to the user 
         if (this.currentLevel === 4 && extraHeartBricks > 0) {
             for (let i = 0; i < extraHeartBricks; i++) {
                 const randomBrickIndex = Math.floor(Math.random() * this.bricks.length);
@@ -66,10 +71,9 @@ class Game {
         }
     }
 
+
+    // This handles arrow keys input for paddle movement 
     keyDownHandler(e) {
-        if (e.key === "e") {
-            this.displayWinMessage();
-        }
         if (e.key === "Right" || e.key === "ArrowRight") {
             this.paddle.rightPressed = true;
         } else if (e.key === "Left" || e.key === "ArrowLeft") {
@@ -77,6 +81,7 @@ class Game {
         }
     }
 
+    // This handles movement if arrow keys are not pressed 
     keyUpHandler(e) {
         if (e.key === "Right" || e.key === "ArrowRight") {
             this.paddle.rightPressed = false;
@@ -85,6 +90,7 @@ class Game {
         }
     }
 
+    // Checks for collisions between ball and bricks 
     collisionDetection() {
         const brickWidth = (this.canvas.width - (this.levels[this.currentLevel].cols - 1) * 10) / this.levels[this.currentLevel].cols;
         const brickHeight = 20;
@@ -96,6 +102,7 @@ class Game {
                     this.ball.dy = -this.ball.dy;
                     brick.status = 0;
 
+                    // If the brick is red and a heart brick, it will give the user an extra life
                     if (brick.isHeartBrick) {
                         this.lives++;
                         this.displayMessage("Extra Life!");
@@ -105,8 +112,15 @@ class Game {
                 }
             }
         }
+
+        if (this.bricks.every(brick => brick.status === 0)) {
+            this.displayMessage(`Level ${this.currentLevel + 1}! Score: ${this.score}`);
+            this.saveScore();
+            this.nextLevel();
+        }
     }
 
+    // Show messages to user for 2 seconds 
     displayMessage(message) {
         this.message = message;
         clearTimeout(this.messageTimeout);
@@ -115,12 +129,13 @@ class Game {
         }, 2000);
     }
 
+    // Moves game to next level 
     nextLevel() {
         this.currentLevel++;
         if (this.currentLevel >= this.levels.length) {
             this.displayWinMessage();
         } else {
-            
+            // Trigger win message if last level is completed
         
             console.log(`Moving to Level ${this.currentLevel + 1}. Current score: ${this.score}`);
     
@@ -128,7 +143,7 @@ class Game {
             this.setupBricks(); 
             this.ball.reset(this.paddle.x); 
     
-            // Increase ball speed for higher levels
+            // This increases the ball speed for level 4 and 5
             if (this.currentLevel === 3) {
                 this.ball.dx *= 1.2;
                 this.ball.dy *= 1.2;
@@ -141,7 +156,7 @@ class Game {
         }
     }    
      
-
+    // When game is over, it will display this message
     displayWinMessage() {
         this.gameOver = true;
         this.gameCompleted = true;
@@ -159,17 +174,20 @@ class Game {
         document.getElementById("playAgainButton").style.display = "block";
     }
 
-    displayGameOver() {
-        this.gameOver = true;
-        this.displayMessage(`Game Over! Final score: ${this.score}`);
-        this.saveScore();
+        // Handle game over state
+        displayGameOver() {
+            this.gameOver = true;
+            this.displayMessage(`Game Over! Final score: ${this.score}`);
+            this.saveScore();
+    
+            clearTimeout(this.reloadTimeout);
+            this.reloadTimeout = setTimeout(() => {
+                document.location.reload();
+            }, 4000);
+        }
 
-        clearTimeout(this.reloadTimeout);
-        this.reloadTimeout = setTimeout(() => {
-            document.location.reload();
-        }, 4000);
-    }
 
+    // This is the main loop for the game 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear the screen first
 
@@ -195,6 +213,7 @@ class Game {
             this.collisionDetection();
             this.ball.update();
 
+            // Handles the ball hitting the bottom of the screen, either start again, or game over 
             if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius) {
                 if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
                     this.ball.dy = -this.ball.dy;
@@ -213,6 +232,7 @@ class Game {
         }
     }
 
+    // Function to start the game with correct score and lives 
     startGame() {
         if (!this.gameRunning) {
             document.getElementById("startButton").style.display = "none";
@@ -225,6 +245,7 @@ class Game {
         }
     }
 
+    // Shows the score 
     drawScore() {
         this.ctx.font = "16px Arial";
         this.ctx.fillStyle = "#000000";
@@ -232,12 +253,14 @@ class Game {
         this.ctx.fillText("Score: " + this.score, 20, 20);
     }
 
+    // Shows the lives 
     drawLives() {
         this.ctx.font = "16px Arial";
         this.ctx.fillStyle = "#000000";
         this.ctx.fillText("Lives: " + this.lives, this.canvas.width - 65, 20);
     }
 
+    // Saves score in local storage which then can be accessed by rankings
     saveScore() {
         if (this.username) {
             let scores = JSON.parse(localStorage.getItem("scores")) || {}; 
@@ -249,6 +272,7 @@ class Game {
         }
     }
 
+    // Refreshes the page
     resetGame() {
         window.location.href = 'game.html';
     }

@@ -9,6 +9,7 @@ export class Paddle {
         this.leftPressed = false;
     }
 
+    // Draw paddle on the canvas
     draw() {
         this.ctx.beginPath();
         this.ctx.rect(this.x, this.canvas.height - this.height, this.width, this.height);
@@ -17,6 +18,7 @@ export class Paddle {
         this.ctx.closePath();
     }
 
+    // Deals with moving the paddle left and right when the arrow keys are pressed 
     update() {
         if (this.rightPressed && this.x < this.canvas.width - this.width) {
             this.x += 7;
@@ -25,6 +27,7 @@ export class Paddle {
         }
     }
 
+    // Resets the paddle to center position 
     reset() {
         this.x = (this.canvas.width - this.width) / 2;
     }
